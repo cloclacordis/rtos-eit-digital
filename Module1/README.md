@@ -1,6 +1,6 @@
 ## FreeRTOS Course Assignment 1
 
-> Completed as part of the "Development of Real-Time Systems" course (EIT Digital).
+> Completed as part of the *Development of Real-Time Systems* course (EIT Digital).
 
 A minimal POSIX-based FreeRTOS demo implementing two periodic tasks:
 
