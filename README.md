@@ -4,16 +4,12 @@ This repository contains assignments and experiments completed as part of the *D
 
 The course focuses on the design and implementation of embedded real-time systems using FreeRTOS.
 
----
-
 ### Resources
 
 - [Course overview](https://eit-campus.eu/course/digital/development-of-real-time-systems)
 - [Course page on Coursera](https://www.coursera.org/learn/real-time-systems)
 - [FreeRTOS official website](https://www.freertos.org)
 - [FreeRTOS GitHub repository](https://github.com/FreeRTOS)
-
----
 
 ### License
 
