@@ -1,0 +1,34 @@
+# Ignore build outputs
+Module1/freertos_app
+build/
+*.o
+*.elf
+*.bin
+*.hex
+*.out
+
+# Intermediate and listing files
+*.i
+*.d
+*.lst
+*.map
+*.asm
+
+# IDE files
+.vscode/
+*.swp
+.DS_Store
+
+# Emacs backups and temp files
+*~
+.#*
+\#*\#
+
+# Backup and temp files
+*.bak
+*.tmp
+*.swp
+
+# Misc
+__pycache__/
+
