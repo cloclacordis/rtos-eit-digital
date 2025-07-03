@@ -42,8 +42,7 @@ After replacement, **the directory structure** should look like this:
     `utils/`
 
 ```bash
-# Build and run
-cd Module2
+# cd Module2
 make clean
 make
 ./freertos_app
