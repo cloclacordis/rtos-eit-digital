@@ -21,25 +21,27 @@ To prepare the project copy all files and folders from `Module1` into `Module2` 
 
 > These four elements must be the original ones from the `Module2` folder.
 
-After replacement, **the directory structure** should look like this:
+After replacement, **the `Module2` directory structure** should look like this:
 
-`Module2/`  
-    `assets/` <- original `Module2`, *not copied* from `Module1`  
-    `croutine.c`  
-    `event_groups.c`  
-    `FreeRTOS-simulator-for-Linux.url`  
-    `heap_3.c`  
-    `include/`  
-    `list.c`  
-    `main.c` <- original `Module2`  
-    `Makefile`  
-    `port.c` <- original `Module2`  
-    `queue.c`  
-    `README.md` <- original `Module2`  
-    `stream_buffer.c`  
-    `tasks.c`  
-    `timers.c`  
-    `utils/`
+  
+`assets/` <- original `Module2`, *not copied* from `Module1`  
+`croutine.c`  
+`event_groups.c`  
+`FreeRTOS-simulator-for-Linux.url`  
+`heap_3.c`  
+`include/`  
+`list.c`  
+`main.c` <- original `Module2`  
+`Makefile`  
+`port.c` <- original `Module2`  
+`queue.c`  
+`README.md` <- original `Module2`  
+`stream_buffer.c`  
+`tasks.c`  
+`timers.c`  
+`utils/`
+
+**Build & Run:**
 
 ```bash
 # cd Module2
