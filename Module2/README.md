@@ -54,7 +54,7 @@ In the terminal will see the output:
 
 ![Freehand Drawing.svg](assets/assignment2.png)
 
-### Additional Assignment Questions & Answers
+### Assignment Questions & Answers
 
 As part of the assignment requirements, the following questions were posed. Below are answers based on the implemented system behavior:
 
