@@ -4,12 +4,13 @@
 
 A minimal POSIX-based FreeRTOS demo implementing two periodic tasks:
 
-- **Task1**: prints `This is task 1` every 100 ms at priority 3
+- **Task1**: prints `This is task 1` every 100 ms at priority 3  
 - **Task2**: prints `This is task 2` every 500 ms at priority 1
 
-### Building and Running
+### Building & Running
 
 ```bash
+make clean
 make
 ./freertos_app
 ```

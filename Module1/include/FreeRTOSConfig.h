@@ -24,7 +24,7 @@
  *
  */
  
-/*
+/******************************************************************************
  * Based on FreeRTOS configuration template
  * Modified by: Timofei Alekseenko
  * Date: June 24, 2025
@@ -33,7 +33,8 @@
  *   - Added user-defined overrides:
  *       #define projCOVERAGE_TEST   0
  *       #define projENABLE_TRACING  0
- */
+ *
+ ******************************************************************************/
 
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
