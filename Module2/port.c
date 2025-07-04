@@ -60,8 +60,8 @@
  * Date: July 3, 2025
  *
  * Changes:
- *  - Externs from main.c for the tick‑hook
- *  - Tick hook: called every OS tick (1 ms)
+ *  - Externs from main.c for measurement variables
+ *  - Tick hook left empty; all timing done inside tasks
  *
  ******************************************************************************/
  
@@ -87,27 +87,17 @@
 #include "timers.h"
 #include "utils/wait_for_event.h"
 
-/* Externs from main.c for the tick‑hook */
+
+/* Externs from main.c */
 extern volatile TickType_t comm_start_tick;
 extern volatile TickType_t comm_last_duration;
-extern volatile bool        comm_measuring;
-extern TaskHandle_t         communication_handle;
+extern TaskHandle_t      communication_handle;
+extern volatile TickType_t matrix_start_tick;
+extern volatile TickType_t matrix_last_period;
+extern TaskHandle_t      matrix_handle;
 
-/* Tick hook: called every OS tick (1 ms) */
-void vApplicationTickHook(void)
-{
-    TaskHandle_t cur = xTaskGetCurrentTaskHandle();
-    if (cur == communication_handle) {
-        if (!comm_measuring) {
-            comm_start_tick = xTaskGetTickCount();
-            comm_measuring  = true;
-        }
-    } else {
-        if (comm_measuring) {
-            comm_last_duration = xTaskGetTickCount() - comm_start_tick;
-            comm_measuring     = false;
-        }
-    }
+void vApplicationTickHook(void) {
+    /* Not used: timing measured in tasks */
 }
 
 /*-----------------------------------------------------------*/
