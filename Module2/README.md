@@ -14,8 +14,8 @@ A minimal POSIX‑based FreeRTOS demo implementing **Three Tasks** and dynamic p
 - `priority_set_task`: Checks timing every 300ms (see `vTaskDelay(pdMS_TO_TICKS(300))`).  
 - Hook: Only verifies task start timestamps (`vApplicationTickHook`).
 
-**Typical Values**
-- Matrix task period: **~210-220 ms**,  
+**Typical Values:**
+- Matrix task period: **~210-220 ms**.  
 - Comm task execution: **~610-630 ms**.  
 
 ### Building & Running
