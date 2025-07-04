@@ -2,11 +2,21 @@
 
 > Completed as part of the *Development of Real-Time Systems* course (EIT Digital).
 
-A minimal POSIX‑based FreeRTOS demo implementing three tasks and dynamic priority management:
+A minimal POSIX‑based FreeRTOS demo implementing **Three Tasks** and dynamic priority management:
 
 - `matrix_task`: performs heavy CPU‑intensive matrix multiplication every cycle (plus dummy delay), at initial priority 3; measures and prints its period each iteration.  
-- `communication_task`: simulates I/O by printing *“Sending data…”* then *“Data sent!”* with 100 ms delays (total 200 ms period), at initial priority 1; measures and prints its own execution time each cycle.  
+- `communication_task`: simulates I/O by printing *“Sending data…”* then *“Data sent!”* with 100 ms delays (200 ms total period), at initial priority 1; measures and prints its own execution time each cycle.  
 - `priority_set_task`: monitors `communication_task` execution time inside the task and adjusts its priority — raises to 4 if execution time > 1000 ms, lowers to 2 if < 200 ms.
+
+**Measurement Implementation**:
+- `matrix_task`: Measures period using `xTaskGetTickCount()` between iterations.  
+- `communication_task`: Tracks execution time between start/end ticks.  
+- `priority_set_task`: Checks timing every 300ms (see `vTaskDelay(pdMS_TO_TICKS(300))`).  
+- Hook: Only verifies task start timestamps (`vApplicationTickHook`).
+
+**Typical Values**
+- Matrix task period: **~210-220 ms**,  
+- Comm task execution: **~610-630 ms**.  
 
 ### Building & Running
 
@@ -20,9 +30,14 @@ make
 
 ![Freehand Drawing.svg](assets/assignment2.png)
 
-This log provides both the period of `matrix_task` and the execution time of `communication_task`, allowing verification of deadlines and priority changes.
+> This log shows both the period of `matrix_task` and the execution time of `communication_task`, allowing verification of deadlines and priority changes.
 
-> **Nota bene:** According to the original assignment, `communication_task`’s priority should only be raised when its execution time exceeds **1000 ms** (and lowered when it’s below **200 ms**). In the sample run above, execution times never reach **1000 ms**, so we won’t see the “raise to 4” event under normal load. To demonstrate the priority boost, we can either simulate a longer delay in `communication_task` or *temporarily reduce* the **1000 ms** threshold for testing purposes.
+### Note on Priority Thresholds
+
+The 1000 ms threshold for priority boosting is intentionally high:
+- Normal execution never reaches this threshold (typical ~600 ms).  
+- This ensures priority boosts only occur in exceptional cases.  
+- For testing purposes, you can temporarily reduce this threshold.
 
 ### Pre-requisites for project building
 

@@ -41,8 +41,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
 
 /* Task handles */
 TaskHandle_t matrix_handle        = NULL;
@@ -60,6 +58,8 @@ volatile TickType_t matrix_last_period = 0;
 #define SIZE 10
 #define ROW SIZE
 #define COL SIZE
+#define DUMMY_DELAY_ITERATIONS 1000000000UL
+
 static void matrix_task(void *pvParameters) {
     (void)pvParameters;
     int i, j, k, l;
@@ -85,8 +85,8 @@ static void matrix_task(void *pvParameters) {
         /* Start period measurement */
         matrix_start_tick = xTaskGetTickCount();
 
-        /* Dummy delay for PC simulator */
-        for (long d = 0; d < 1000000000; d++) { __asm__("nop"); }
+        /* Artificial delay to simulate embedded system CPU load */
+        for (unsigned long d = 0; d < DUMMY_DELAY_ITERATIONS; d++) { __asm__("nop"); }
 
         /* Zero matrix c */
         for (i = 0; i < SIZE; i++)
@@ -133,7 +133,9 @@ static void communication_task(void *pvParameters) {
         comm_last_duration = xTaskGetTickCount() - comm_start_tick;
 
         /* Print measured execution time */
-        printf("[Comm Task] Execution = %lu ms\n", (unsigned long)comm_last_duration);
+        printf("[Comm Task] Execution = %lu ms%s\n",
+        (unsigned long)comm_last_duration,
+        (comm_last_duration > 1000) ? " (WARNING: Exceeds deadline!)" : "");
         fflush(stdout);
     }
 }
@@ -141,15 +143,27 @@ static void communication_task(void *pvParameters) {
 /* ===================== priority_set_task ======================= */
 static void priority_set_task(void *pvParameters) {
     (void)pvParameters;
+    /* Initial delay to wait for first full communication_task cycle */
+    vTaskDelay(pdMS_TO_TICKS(300));
+    
     for (;;) {
-        if (comm_last_duration > pdMS_TO_TICKS(1000)) {
-            /* execution > 1000 ms -> raise priority */
-            vTaskPrioritySet(communication_handle, 4);
-        } else if (comm_last_duration < pdMS_TO_TICKS(200)) {
-            /* execution < 200 ms -> lower priority */
-            vTaskPrioritySet(communication_handle, 2);
+        /* Skip zero execution time measurements */
+        if (comm_last_duration == 0) {
+            vTaskDelay(pdMS_TO_TICKS(100));
+            continue;
         }
-        vTaskDelay(pdMS_TO_TICKS(100));
+        
+        if (comm_last_duration > pdMS_TO_TICKS(1000)) {
+            vTaskPrioritySet(communication_handle, 4);
+            printf("[Priority] RAISED to 4 (%lu ms > 1000 ms threshold)\n",
+                  (unsigned long)comm_last_duration);
+        } 
+        else if (comm_last_duration < pdMS_TO_TICKS(200)) {
+            vTaskPrioritySet(communication_handle, 2);
+            printf("[Priority] LOWERED to 2 (%lu ms < 200 ms threshold)\n",
+                  (unsigned long)comm_last_duration);
+        }
+        vTaskDelay(pdMS_TO_TICKS(300));
     }
 }
 
@@ -157,7 +171,7 @@ static void priority_set_task(void *pvParameters) {
 int main(void) {
     xTaskCreate(matrix_task,        "Matrix",         1000,                      NULL, 3, &matrix_handle);
     xTaskCreate(communication_task, "Communication",  configMINIMAL_STACK_SIZE, NULL, 1, &communication_handle);
-    xTaskCreate(priority_set_task,  "prioritysettask",configMINIMAL_STACK_SIZE, NULL, 2, NULL);
+    xTaskCreate(priority_set_task,  "PrioritySetTask",configMINIMAL_STACK_SIZE, NULL, 2, NULL);
 
     vTaskStartScheduler();
     printf("Scheduler failed.\n");

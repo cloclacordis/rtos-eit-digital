@@ -61,7 +61,7 @@
  *
  * Changes:
  *  - Externs from main.c for measurement variables
- *  - Tick hook left empty; all timing done inside tasks
+ *  - Tick hook realization
  *
  ******************************************************************************/
  
@@ -97,7 +97,22 @@ extern volatile TickType_t matrix_last_period;
 extern TaskHandle_t      matrix_handle;
 
 void vApplicationTickHook(void) {
-    /* Not used: timing measured in tasks */
+    static TickType_t last_comm_tick = 0;
+    static TickType_t last_matrix_tick = 0;
+    
+    /* Track communication task start (ignore initial zero tick) */
+    if (comm_start_tick != 0 && comm_start_tick != last_comm_tick) {
+        last_comm_tick = comm_start_tick;
+        printf("[Tick Hook] Comm task started at %lu\n", 
+              (unsigned long)comm_start_tick);
+    }
+    
+    /* Track matrix task start (ignore initial zero tick) */
+    if (matrix_start_tick != 0 && matrix_start_tick != last_matrix_tick) {
+        last_matrix_tick = matrix_start_tick;
+        printf("[Tick Hook] Matrix task started at %lu\n", 
+              (unsigned long)matrix_start_tick);
+    }
 }
 
 /*-----------------------------------------------------------*/
