@@ -32,9 +32,9 @@
  * for the "Development of Real-Time Systems" course (EIT Digital).
  *
  * Implements:
- *  - matrix_task: heavy CPU load
- *  - communication_task: I/O, 200 ms period
- *  - priority_set_task: dynamic priority adjustment via TickHook
+ *  - matrix_task: heavy CPU load, measures its own period
+ *  - communication_task: I/O, measures exec. time, 200 ms period
+ *  - priority_set_task: dynamic priority adjustment based on exec. time
  *
  ******************************************************************************/
 
@@ -48,28 +48,30 @@
 TaskHandle_t matrix_handle        = NULL;
 TaskHandle_t communication_handle = NULL;
 
-/* For measuring communication_task execution time (in ticks) */
+/* For measuring communication_task execution time */
 volatile TickType_t comm_start_tick    = 0;
 volatile TickType_t comm_last_duration = 0;
-volatile bool        comm_measuring    = false;
+
+/* For measuring matrix_task period */
+volatile TickType_t matrix_start_tick  = 0;
+volatile TickType_t matrix_last_period = 0;
 
 /* ========================= matrix_task ========================= */
 #define SIZE 10
 #define ROW SIZE
 #define COL SIZE
-static void matrix_task() {
-    int i;
+static void matrix_task(void *pvParameters) {
+    (void)pvParameters;
+    int i, j, k, l;
+    double sum;
 
     /* Allocate matrices a, b, c */
-    double **a = (double **)pvPortMalloc(ROW * sizeof(double*));
-    for (i = 0; i < ROW; i++) a[i] = (double *)pvPortMalloc(COL * sizeof(double));
-    double **b = (double **)pvPortMalloc(ROW * sizeof(double*));
-    for (i = 0; i < ROW; i++) b[i] = (double *)pvPortMalloc(COL * sizeof(double));
-    double **c = (double **)pvPortMalloc(ROW * sizeof(double*));
-    for (i = 0; i < ROW; i++) c[i] = (double *)pvPortMalloc(COL * sizeof(double));
-    
-    double sum = 0.0;
-    int j, k, l;
+    double **a = pvPortMalloc(ROW * sizeof(double*));
+    for (i = 0; i < ROW; i++) a[i] = pvPortMalloc(COL * sizeof(double));
+    double **b = pvPortMalloc(ROW * sizeof(double*));
+    for (i = 0; i < ROW; i++) b[i] = pvPortMalloc(COL * sizeof(double));
+    double **c = pvPortMalloc(ROW * sizeof(double*));
+    for (i = 0; i < ROW; i++) c[i] = pvPortMalloc(COL * sizeof(double));
 
     /* Initialize a and b */
     for (i = 0; i < SIZE; i++) {
@@ -80,17 +82,16 @@ static void matrix_task() {
     }
 
     while (1) {
+        /* Start period measurement */
+        matrix_start_tick = xTaskGetTickCount();
+
         /* Dummy delay for PC simulator */
-        long simulationdelay;
-        for (simulationdelay = 0; simulationdelay < 1000000000; simulationdelay++)
-            ;
+        for (long d = 0; d < 1000000000; d++) { __asm__("nop"); }
 
         /* Zero matrix c */
-        for (i = 0; i < SIZE; i++) {
-            for (j = 0; j < SIZE; j++) {
+        for (i = 0; i < SIZE; i++)
+            for (j = 0; j < SIZE; j++)
                 c[i][j] = 0.0;
-            }
-        }
 
         /* Matrix multiplication */
         for (i = 0; i < SIZE; i++) {
@@ -98,13 +99,21 @@ static void matrix_task() {
                 sum = 0.0;
                 for (k = 0; k < SIZE; k++) {
                     for (l = 0; l < 10; l++) {
-                        sum = sum + a[i][k] * b[k][j];
+                        sum += a[i][k] * b[k][j];
                     }
                 }
                 c[i][j] = sum;
             }
         }
-        vTaskDelay(100);
+
+        /* Measure period */
+        matrix_last_period = xTaskGetTickCount() - matrix_start_tick;
+
+        /* Print measured period (in ms) */
+        printf("[Matrix Task] Period = %lu ms\n", (unsigned long)matrix_last_period);
+        fflush(stdout);
+
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
 
@@ -112,54 +121,65 @@ static void matrix_task() {
 static void communication_task(void *pvParameters) {
     (void)pvParameters;
     while (1) {
-        printf("Sending data...\n");
+        /* Start execution-time measurement */
+        comm_start_tick = xTaskGetTickCount();
+
+        printf("Sending data...\n"); fflush(stdout);
+        vTaskDelay(pdMS_TO_TICKS(100));
+        printf("Data sent!\n");    fflush(stdout);
+        vTaskDelay(pdMS_TO_TICKS(100));
+
+        /* Finalize measurement */
+        comm_last_duration = xTaskGetTickCount() - comm_start_tick;
+
+        /* Print measured execution time */
+        printf("[Comm Task] Execution = %lu ms\n", (unsigned long)comm_last_duration);
         fflush(stdout);
-        vTaskDelay(100);
-        printf("Data sent!\n");
-        fflush(stdout);
-        vTaskDelay(100);
     }
 }
 
 /* ===================== priority_set_task ======================= */
 static void priority_set_task(void *pvParameters) {
     (void)pvParameters;
-    while (1) {
-        TickType_t dur = comm_last_duration;
-        if (dur > 1000) {
-            /* execution > 1000 ms -> raise priority */
+    for (;;) {
+        if (comm_last_duration > pdMS_TO_TICKS(1000)) {
+            /* execution > 1000 ms -> raise priority */
             vTaskPrioritySet(communication_handle, 4);
-        } else if (dur < 200) {
-            /* execution < 200 ms -> lower priority */
+        } else if (comm_last_duration < pdMS_TO_TICKS(200)) {
+            /* execution < 200 ms -> lower priority */
             vTaskPrioritySet(communication_handle, 2);
         }
-        vTaskDelay(100);
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
 
 /* ========================= main() ============================== */
 int main(void) {
-    xTaskCreate((pdTASK_CODE)matrix_task,        (const char *)"Matrix",       1000,                     NULL, 3, &matrix_handle);
-    xTaskCreate((pdTASK_CODE)communication_task, (const char *)"Communication", configMINIMAL_STACK_SIZE, NULL, 1, &communication_handle);
-    xTaskCreate((pdTASK_CODE)priority_set_task,  (const char *)"PrioSetter",   configMINIMAL_STACK_SIZE, NULL, 2, NULL);
+    xTaskCreate(matrix_task,        "Matrix",         1000,                      NULL, 3, &matrix_handle);
+    xTaskCreate(communication_task, "Communication",  configMINIMAL_STACK_SIZE, NULL, 1, &communication_handle);
+    xTaskCreate(priority_set_task,  "prioritysettask",configMINIMAL_STACK_SIZE, NULL, 2, NULL);
+
     vTaskStartScheduler();
-    /* Should never reach here */
     printf("Scheduler failed.\n");
     return 0;
 }
 
 /* ========================= Hook functions ========================= */
-void vApplicationMallocFailedHook(void)          { for(;;); }
-void vApplicationIdleHook(void)                  { /* nothing */ }
+void vApplicationMallocFailedHook(void)                             { for(;;); }
+void vApplicationIdleHook(void)                                     { /* nothing */ }
 void vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName) { (void)pxTask; (void)pcTaskName; for(;;); }
-void vAssertCalled(const char *pcFile, unsigned long ulLine)            { (void)pcFile; (void)ulLine; for(;;); }
-void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTCBBuffer, StackType_t **ppxIdleStackBuffer, configSTACK_DEPTH_TYPE *pulIdleStackSize) {
+void vAssertCalled(const char *pcFile, unsigned long ulLine)       { (void)pcFile; (void)ulLine; for(;;); }
+void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTCBBuffer,
+                                   StackType_t **ppxIdleStackBuffer,
+                                   configSTACK_DEPTH_TYPE *pulIdleStackSize) {
     static StaticTask_t xIdleTCB; static StackType_t xIdleStack[configMINIMAL_STACK_SIZE];
     *ppxIdleTCBBuffer = &xIdleTCB; *ppxIdleStackBuffer = xIdleStack; *pulIdleStackSize = configMINIMAL_STACK_SIZE;
 }
-void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTCBBuffer, StackType_t **ppxTimerStackBuffer, configSTACK_DEPTH_TYPE *pulTimerStackSize) {
+void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTCBBuffer,
+                                    StackType_t **ppxTimerStackBuffer,
+                                    configSTACK_DEPTH_TYPE *pulTimerStackSize) {
     static StaticTask_t xTimerTCB; static StackType_t xTimerStack[configTIMER_TASK_STACK_DEPTH];
     *ppxTimerTCBBuffer = &xTimerTCB; *ppxTimerStackBuffer = xTimerStack; *pulTimerStackSize = configTIMER_TASK_STACK_DEPTH;
 }
-void vApplicationDaemonTaskStartupHook(void)     { /* nothing */ }
+void vApplicationDaemonTaskStartupHook(void)                        { /* nothing */ }
 
