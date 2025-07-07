@@ -319,7 +319,7 @@ def get_divisors(n):
 def find_max_frame(tasks):
     """
     Ищем наибольший размер кадра для набора задач.
-    Task — список словарей {'P': период, 'e': время выполнения, 'D': дедлайн}.
+    Task - список словарей {'P': период, 'e': время выполнения, 'D': дедлайн}.
     """
     periods = [t['P'] for t in tasks]
     exec_times = [t['e'] for t in tasks]
