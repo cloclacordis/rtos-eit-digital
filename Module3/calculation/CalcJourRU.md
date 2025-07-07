@@ -408,5 +408,13 @@ if __name__ == "__main__":
     main()
 ```
 
+Запуск, ввод, вывод:
+
+![Freehand Drawing.svg](assets/03.cyclicSchedulerRU1.png)
+![Freehand Drawing.svg](assets/04.cyclicSchedulerRU2.png)
+![Freehand Drawing.svg](assets/05.cyclicSchedulerRU3.png)
+
+---
+
 ### Задача вторая
 
