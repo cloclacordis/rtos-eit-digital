@@ -219,7 +219,7 @@ except ValueError:
 
 Запуск, ввод, вывод:
 
-![Freehand Drawing.svg](02.gcdRU.png)
+![Freehand Drawing.svg](assets/02.gcdRU.png)
 
 ---
 
