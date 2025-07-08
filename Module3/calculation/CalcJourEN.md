@@ -214,29 +214,29 @@ Run, input, output:
 
 ---
 
-Thus, **all** hyperperiod **H** divisors for each task set:
+So, **all** divisors of the hyperperiod **H** for each task set:
 
-- First set, **H = 660**: 1, 2, 3, 4, 5, 6, 10, 11, 12, 15, 20, 22, 30, 33, 44, 55, 60, 66, 110, 132, 165, 220, 330, 660.  
-- Second set, **H = 20**: 1, 2, 4, 5, 10, 20.  
-- Third set, **H = 1260**: 1, 2, 3, 4, 5, 6, 7, 9, 10, 12, 14, 15, 18, 20, 21, 28, 30, 35, 36, 42, 45, 60, 63, 70, 84, 90, 105, 126, 140, 180, 210, 252, 315, 420, 630, 1260.
+- For the first set, **H = 660**: 1, 2, 3, 4, 5, 6, 10, 11, 12, 15, 20, 22, 30, 33, 44, 55, 60, 66, 110, 132, 165, 220, 330, 660.  
+- For the second set, **H = 20**: 1, 2, 4, 5, 10, 20.  
+- For the third set, **H = 1260**: 1, 2, 3, 4, 5, 6, 7, 9, 10, 12, 14, 15, 18, 20, 21, 28, 30, 35, 36, 42, 45, 60, 63, 70, 84, 90, 105, 126, 140, 180, 210, 252, 315, 420, 630, 1260.
 
-Apply the minimum frame size requirement **f** and get:
+Apply the **minimum frame size constraint** **f**, and get:
 
-- First set, **f ≥ 3**, **f = {3,4,5,6,10,11,12,15,20,22,30,33,44,55,60,66,110,132,165,220,330,660}**.  
-- Second set, **f ≥ 5**, **f = {5,10,20}**.  
-- Third set, **f ≥ 9**, **f = {9,10,12,14,15,18,20,21,28,30,35,36,42,45,60,63,70,84,90,105,126,140,180,210,252,315,420,630,1260}**.
+- For the first set, **f ≥ 3**, **f = {3, 4, 5, 6, 10, 11, 12, 15, 20, 22, 30, 33, 44, 55, 60, 66, 110, 132, 165, 220, 330, 660}**.  
+- For the second set, **f ≥ 5**, **f = {5, 10, 20}**.  
+- For the third set, **f ≥ 9**, **f = {9, 10, 12, 14, 15, 18, 20, 21, 28, 30, 35, 36, 42, 45, 60, 63, 70, 84, 90, 105, 126, 140, 180, 210, 252, 315, 420, 630, 1260}**.
 
-Recall maximum period values **P** to limit candidate search "from above":
+Now apply the **maximum task period** **P** to filter candidate frame sizes from above:
 
-- First set **P<sub>max</sub> = 22**.  
-- Second set, **P<sub>max</sub> = 20**.  
-- Third set, **P<sub>max</sub> = 45**.
+- For the first set: **P<sub>max</sub> = 22**.  
+- For the second set: **P<sub>max</sub> = 20**.  
+- For the third set: **P<sub>max</sub> = 45**.
 
-Sort frames in descending order to get the **candidate set** for requirement 3 verification:
+Sort the filtered frame sizes in descending order to get the **set of candidates** for verifying the final requirement:
 
-- First set: **f<sub>rev</sub> = {22,20,15,12,11,10,6,5,4,3}**.  
-- Second set: **f<sub>rev</sub> = {20,10,5}**.  
-- Third set: **f<sub>rev</sub> = {45,42,36,35,30,28,21,20,18,15,14,12,10,9}**.
+- For the first set: **f<sub>rev</sub> = {22, 20, 15, 12, 11, 10, 6, 5, 4, 3}**.  
+- For the second set: **f<sub>rev</sub> = {20, 10, 5}**.  
+- For the third set: **f<sub>rev</sub> = {45, 42, 36, 35, 30, 28, 21, 20, 18, 15, 14, 12, 10, 9}**.
 
 ---
 
