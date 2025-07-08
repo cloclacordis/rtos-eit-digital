@@ -64,9 +64,11 @@
 
 #### Условия
 
-Решение выполняется с использованием листа бумаги и ручки.
+Решение выполняется с использованием листа бумаги и ручки. **Черновик решения**:
 
-> Дополнительно будет предложен пример автоматизации решения.
+![Freehand Drawing.svg](assets/01.mydraft.jpg)
+
+> Далее будет подробно изложена логика решения и предложен пример автоматизации.
 
 ---
 
@@ -90,6 +92,47 @@
 - Для первого набора: LCM(15,20,22) = **660**.  
 - Для второго набора: LCM(4,5,20) = **20**.  
 - Для третьего набора: LCM(5,7,12,45) = **1260**.
+
+> Чтобы найти НОК (наименьшее общее кратное) нескольких чисел, нужно: разложить каждое число на простые множители, взять максимальные степени всех уникальных простых чисел и перемножить их — результат умножения и будет НОК. Например, НОК(12,18): 12 = 2<sup>2</sup> * 3, 18 = 2 * 3<sup>2</sup> -> НОК = 2<sup>2</sup> * 3<sup>2</sup> = 36.
+
+**Пример автоматизированного поиска НОК для целых положительных чисел**
+
+```python
+import math
+from functools import reduce
+
+def lcm(a, b):
+    return abs(a * b) // math.gcd(a, b)
+
+def lcm_multiple(numbers):
+    return reduce(lcm, numbers)
+
+def get_numbers():
+    while True:
+        user_input = input("Введите числа через пробел для нахождения НОК: ")
+        parts = user_input.strip().split()
+        try:
+            numbers = [int(p) for p in parts]
+            if not numbers:
+                raise ValueError("Список пуст.")
+            if any(n <= 0 for n in numbers):
+                raise ValueError("Все числа должны быть положительными.")
+            return numbers
+        except ValueError as e:
+            print(f"Ошибка ввода: {e}. Попробуйте снова.\n")
+
+def main():
+    numbers = get_numbers()
+    result = lcm_multiple(numbers)
+    print(f"НОК чисел {numbers} = {result}")
+
+if __name__ == "__main__":
+    main()
+```
+
+Запуск, ввод, вывод:
+
+![Freehand Drawing.svg](assets/02.lcmRU.png)
 
 ---
 
@@ -130,7 +173,7 @@
 
 Количество (положительных) делителей: 3 * 2 * 2 * 2 = **24**. Чтобы найти **все делители**, нужно перебрать **все комбинации** указанных выше степеней и для каждой вычислить значение по формуле.
 
-**Пример автоматизированного поиска делителей для положительного целого числа**
+**Пример автоматизированного поиска делителей для целого положительного числа**
 
 ```python
 def get_divisors(n):
@@ -152,7 +195,7 @@ print("Делители:", get_divisors(number))
 
 Запуск, ввод, вывод:
 
-![Freehand Drawing.svg](assets/01.divisorsRU.png)
+![Freehand Drawing.svg](assets/03.divisorsRU.png)
 
 ---
 
@@ -220,7 +263,7 @@ except ValueError:
 
 Запуск, ввод, вывод:
 
-![Freehand Drawing.svg](assets/02.gcdRU.png)
+![Freehand Drawing.svg](assets/04.gcdRU.png)
 
 ---
 
@@ -411,9 +454,9 @@ if __name__ == "__main__":
 
 Запуск, ввод, вывод:
 
-![Freehand Drawing.svg](assets/03.cyclicSchedulerRU1.png)
+![Freehand Drawing.svg](assets/05.cyclicSchedulerRU1.png)
 
-![Freehand Drawing.svg](assets/04.cyclicSchedulerRU2.png)
+![Freehand Drawing.svg](assets/05.cyclicSchedulerRU2.png)
 
 ![Freehand Drawing.svg](assets/05.cyclicSchedulerRU3.png)
 

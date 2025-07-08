@@ -64,9 +64,11 @@ In other words: **2f − GCD(P<sub>i</sub>, f) ≤ D<sub>i</sub>**, where **f** 
 
 #### Conditions
 
-The solution is to be completed using pen and paper.
+The solution is performed using a sheet of paper and a pen. **Draft solution**:
 
-> An automation example will also be provided.
+![Freehand Drawing.svg](assets/01.mydraft.jpg)
+
+> The logic of the solution will be described in detail below and an example of automation will be offered.
 
 ---
 
@@ -90,6 +92,51 @@ First, find the **LCM** of periods **P** for each set.
 - First set: LCM(15,20,22) = **660**.  
 - Second set: LCM(4,5,20) = **20**.  
 - Third set: LCM(5,7,12,45) = **1260**.
+
+> To find the LCM of several numbers manually: factor each number into its prime factors, take the highest power of each unique prime, multiply them together — that’s the LCM. For example, LCM(12,18): 12 = 2<sup>2</sup> * 3, 18 = 2 * 3<sup>2</sup> -> LCM = 2<sup>2</sup> * 3<sup>2</sup> = 36.
+
+**Example of LCM search automation for positive integers**
+
+```python
+import math
+from functools import reduce
+
+# Function to compute LCM of two numbers
+def lcm(a, b):
+    return abs(a * b) // math.gcd(a, b)
+
+# Function to compute LCM of a list of numbers
+def lcm_multiple(numbers):
+    return reduce(lcm, numbers)
+
+# Function to get user input and validate it
+def get_numbers():
+    while True:
+        user_input = input("Enter numbers separated by spaces to find LCM: ")
+        parts = user_input.strip().split()
+        try:
+            numbers = [int(p) for p in parts]
+            if not numbers:
+                raise ValueError("The list is empty.")
+            if any(n <= 0 for n in numbers):
+                raise ValueError("All numbers must be positive integers.")
+            return numbers
+        except ValueError as e:
+            print(f"Input error: {e}. Please try again.\n")
+
+# Main function
+def main():
+    numbers = get_numbers()
+    result = lcm_multiple(numbers)
+    print(f"LCM of {numbers} = {result}")
+
+if __name__ == "__main__":
+    main()
+```
+
+Run, input, output:
+
+![Freehand Drawing.svg](assets/02.lcmEN.png)
 
 ---
 
@@ -152,7 +199,7 @@ print("Divisors:", get_divisors(number))
 
 Run, input, output:
 
-![Freehand Drawing.svg](assets/06.divisorsEN.png)
+![Freehand Drawing.svg](assets/03.divisorsEN.png)
 
 ---
 
@@ -220,7 +267,7 @@ except ValueError:
 
 Run, input, output:
 
-![Freehand Drawing.svg](assets/07.gcdEN.png)
+![Freehand Drawing.svg](assets/04.gcdEN.png)
 
 ---
 
@@ -411,11 +458,11 @@ if __name__ == "__main__":
 
 Run, input, output:
 
-![Freehand Drawing.svg](assets/08.cyclicSchedulerEN1.png)
+![Freehand Drawing.svg](assets/05.cyclicSchedulerEN1.png)
 
-![Freehand Drawing.svg](assets/09.cyclicSchedulerEN2.png)
+![Freehand Drawing.svg](assets/05.cyclicSchedulerEN2.png)
 
-![Freehand Drawing.svg](assets/10.cyclicSchedulerEN3.png)
+![Freehand Drawing.svg](assets/05.cyclicSchedulerEN3.png)
 
 --- 
 
