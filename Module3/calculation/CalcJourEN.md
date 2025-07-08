@@ -35,8 +35,11 @@ For the cyclic scheduler, **three task sets** are provided:
 | T<sub>3</sub>    | 12    | 6     | 12    |
 | T<sub>4</sub>    | 45    | 9     | 45    |
 
-> Task structure: **T<sub>n</sub>(P,e,D)**, where **P** — *period*, or time between two consecutive task activations; **e** — *execution time*, or duration required for normal task completion; **D** — *deadline*, or maximum time by which the task must be completed.
-> If the deadline **D** is not explicitly specified — as in **T<sub>3</sub>(22,3)**, then **D = P**, hence **T<sub>3</sub>(22,3,22)**.
+> Task structure: **T<sub>n</sub>(P,e,D)**,  
+where **P** — *period*, or time between two consecutive task activations;  
+**e** — *execution time*, or duration required for normal task completion;  
+**D** — *deadline*, or maximum time by which the task must be completed.  
+> If the deadline **D** is not explicitly specified — as in **T<sub>3</sub>(22,3)** — then **D = P**, hence **T<sub>3</sub>(22,3,22)**.
 
 ---
 
@@ -44,19 +47,22 @@ For the cyclic scheduler, **three task sets** are provided:
 
 To find, for each of the three task sets, the **largest feasible frame size** that satisfies the following **three requirements**:
 
-**1**. **Task duration**. Each task **i** must start and complete within a single frame **f**. Therefore, the frame size must be no less than the maximum execution time:
-**f ≥ max<sub>1≤i≤n</sub>(e<sub>i</sub>)**,
+**1**. **Task duration**. Each task **i** must start and complete within a single frame **f**. Therefore, the frame size must be no less than the maximum execution time:  
+**f ≥ max<sub>1≤i≤n</sub>(e<sub>i</sub>)**,  
 where **e<sub>i</sub>** is the execution time of task **i**.
 
 **2**. **Hyperperiod divisibility**. The frame size must divide the hyperperiod evenly: **H mod f = 0**, i.e., **f** divides **H** with no remainder.
 
-> The **hyperperiod** is the shortest interval that contains all task periods. Mathematically, it is the **least common multiple (LCM)** of all task periods in the given set.
-> In practice, the hyperperiod can be used to verify feasibility: if the schedule meets all deadlines within one hyperperiod, it will always meet them.
+> The **hyperperiod** is the shortest interval that contains all task periods. Mathematically, it is the **least common multiple (LCM)** of all task periods in the given set.  
+> In practice, the hyperperiod can be used to verify feasibility: if the schedule meets all deadlines within one hyperperiod, it will always meet them.  
 > To determine the number of frames **F** in a hyperperiod **H**, a simple division is used: **F = H / f** (not to be confused with the divisibility check **H mod f = 0**).
 
-**3**. **Interval between release time and deadline**. There must be at least one frame that fits within the interval between a task’s release time and its deadline.
-In other words, **2f − GCD(P<sub>i</sub>, f) ≤ D<sub>i</sub>**,
-where **f** is the frame size; **P<sub>i</sub>** is the period of task **i**; **D<sub>i</sub>** is the deadline of task **i**; and **GCD(P<sub>i</sub>, f)** is the **greatest common divisor (GCD)** of the task’s period and the frame size.
+**3**. **Interval between release time and deadline**. There must be at least one frame that fits within the interval between a task’s release time and its deadline.  
+In other words, **2f − GCD(P<sub>i</sub>, f) ≤ D<sub>i</sub>**,  
+where **f** is the frame size;  
+**P<sub>i</sub>** is the period of task **i**;  
+**D<sub>i</sub>** is the deadline of task **i**;  
+**GCD(P<sub>i</sub>, f)** is the **greatest common divisor (GCD)** of the task’s period and the frame size.
 
 ---
 
@@ -74,11 +80,11 @@ The solution is carried out using a sheet of paper and a pen. **Draft solution**
 
 **Search Logic**
 
-1. Find the hyperperiod **H = LCM(P<sub>1</sub>,P<sub>2</sub>,...,P<sub>n</sub>)**.
-2. Select candidate frame sizes **f** that satisfy both of the following:
-- **f** is a divisor of **H**,
-- **f ≥ max<sub>1≤i≤n</sub>(e<sub>i</sub>)**.
-3. Check whether each candidate **f** satisfies the condition **2f − GCD(P<sub>i</sub>, f) ≤ D<sub>i</sub>** for every task.
+1. Find the hyperperiod **H = LCM(P<sub>1</sub>,P<sub>2</sub>,...,P<sub>n</sub>)**.  
+2. Select candidate frame sizes **f** that satisfy both of the following:  
+- **f** is a divisor of **H**,  
+- **f ≥ max<sub>1≤i≤n</sub>(e<sub>i</sub>)**.  
+3. Check whether each candidate **f** satisfies the condition **2f − GCD(P<sub>i</sub>, f) ≤ D<sub>i</sub>** for every task.  
 4. From the values of **f** that pass the test, choose the **largest** one for each task set.
 
 ---
@@ -96,7 +102,7 @@ First, find the **LCM** of task periods **P** for each set.
 > take the highest power of each unique prime factor among all the numbers,  
 > multiply them — the result is the LCM.
 >
-> For example, LCM(12,18):
+> For example, LCM(12,18):  
 > 12 = 2<sup>2</sup> * 3,  
 > 18 = 2 * 3<sup>2</sup>,  
 > LCM = 2<sup>2</sup> * 3<sup>2</sup> = 36.
@@ -140,7 +146,7 @@ if __name__ == "__main__":
     main()
 ```
 
-Run, input, output:
+Sample run:
 
 ![Freehand Drawing.svg](assets/02.lcmEN.png)
 
@@ -176,7 +182,7 @@ The general formula for a divisor is:
 **div. = 2<sup>a</sup> × 3<sup>b</sup> × 5<sup>c</sup> × 11<sup>d</sup>**,  
 where **a ∈ {0,1,2}, b, c, d ∈ {0,1}**.
 
-The number of such combinations is:
+The number of such combinations is:  
 (2 + 1) × (1 + 1) × (1 + 1) × (1 + 1) = 3 × 2 × 2 × 2 = **24 divisors**.
 
 To generate all divisors, go through all valid combinations of **a**, **b**, **c**, and **d**:
@@ -208,7 +214,7 @@ number = int(input("Enter a positive integer: "))
 print("Divisors:", get_divisors(number))
 ```
 
-Run, input, output:
+Sample run:
 
 ![Freehand Drawing.svg](assets/03.divisorsEN.png)
 
@@ -242,13 +248,11 @@ Sort the filtered frame sizes in descending order to get the **set of candidates
 
 **Step 3**
 
-Verify requirement 3 for the obtained sets: **2f − GCD(P<sub>i</sub>, f) ≤ D<sub>i</sub>**, where **f** is the frame size; **P<sub>i</sub>** is the period of task **i**; **D<sub>i</sub>** is the deadline of task **i**; **GCD(P<sub>i</sub>, f)** is the greatest common divisor of the period and frame.
+Let’s verify requirement 3 for each candidate set: **2f − GCD(P<sub>i</sub>, f) ≤ D<sub>i</sub>**.
 
-Briefly, the **greatest common divisor (GCD)** of two or more numbers is the largest number that divides all given numbers without remainder.
+A quick reminder: the **greatest common divisor (GCD)** of two or more numbers is the largest number that divides all of them without remainder. The simplest way to find the GCD is the **Euclidean algorithm** for two integers `a` and `b`:
 
-The simplest algorithm for computing GCD is the **Euclidean algorithm** for two numbers `a` and `b`:
-
-1. While `b ≠ 0`, execute:
+1. While `b ≠ 0`, do:
 
 ```python
 temp = b
@@ -256,9 +260,9 @@ b = a % b
 a = temp
 ```
 
-2. When `b = 0`, the value `a` is the GCD.
+2. When `b = 0`, the current value of `a` is the GCD.
     
-Or:
+Alternatively, as a function:
 
 ```python
 def gcd(a, b):
@@ -268,66 +272,66 @@ def gcd(a, b):
 
 # User input
 try:
-    a = int(input("Enter first number: "))
-    b = int(input("Enter second number: "))
+    a = int(input("Enter the first number: "))
+    b = int(input("Enter the second number: "))
     result = gcd(a, b)
     print(f"GCD({a},{b}) = {result}")
 except ValueError:
-    print("Error: enter integers.")
+    print("Error: please enter valid integers.")
 ```
 
-Run, input, output:
+Sample run:
 
 ![Freehand Drawing.svg](assets/04.gcdEN.png)
 
 ---
 
-Begin **requirement 3 verification**.
+**Checking the Third Requirement**
 
-- First set:  
-   * **T<sub>1</sub>(15,1,14)**:  
-     2 * 22 − GCD(15,22) = 44 − 1  = 43 > D<sub>1</sub>(14). Candidate **f = 22 fails**.  
-     2 * 20 − GCD(15,20) = 40 − 5  = 35 > D<sub>1</sub>(14). Candidate **f = 20 fails**.  
-     2 * 15 − GCD(15,15) = 30 − 15 = 15 > D<sub>1</sub>(14). Candidate **f = 15 fails**.  
-     2 * 12 − GCD(15,12) = 24 − 3  = 21 > D<sub>1</sub>(14). Candidate **f = 12 fails**.  
-     2 * 11 − GCD(15,11) = 22 − 1  = 21 > D<sub>1</sub>(14). Candidate **f = 11 fails**.  
-     2 * 10 − GCD(15,10) = 20 − 5  = 15 > D<sub>1</sub>(14). Candidate **f = 10 fails**.  
-     2 * 6  − GCD(15,6)  = 12 − 3  = 9  < D<sub>1</sub>(14). Candidate **f = 6  passes**.
-     
-   * **T<sub>2</sub>(20,2,26)**:  
-     2 * 6 − GCD(20,6) = 12 − 2 = 10 < D<sub>2</sub>(26). Candidate **f = 6 passes**.
-     
-   * **T<sub>3</sub>(22,3)**:  
-     2 * 6 − GCD(22,6) = 12 − 2 = 10 < D<sub>3</sub>(22). Candidate **f = 6 passes**.
+- **For the first task set**  
+  - **T<sub>1</sub>(15,1,14)**  
+    2 * 22 − GCD(15,22) = 44 − 1  = 43 > D<sub>1</sub>(14) -> **f = 22 fails**.  
+    2 * 20 − GCD(15,20) = 40 − 5  = 35 > D<sub>1</sub>(14) -> **f = 20 fails**.  
+    2 * 15 − GCD(15,15) = 30 − 15 = 15 > D<sub>1</sub>(14) -> **f = 15 fails**.  
+    2 * 12 − GCD(15,12) = 24 − 3  = 21 > D<sub>1</sub>(14) -> **f = 12 fails**.  
+    2 * 11 − GCD(15,11) = 22 − 1  = 21 > D<sub>1</sub>(14) -> **f = 11 fails**.  
+    2 * 10 − GCD(15,10) = 20 − 5  = 15 > D<sub>1</sub>(14) -> **f = 10 fails**.  
+    2 * 6  − GCD(15,6)  = 12 − 3  = 9  < D<sub>1</sub>(14) -> **f = 6 passes**.  
 
-> Candidate **f = 6** passes all requirement 3 checks for the first set and does not violate other requirements.
+  - **T<sub>2</sub>(20,2,26)**  
+    2 * 6 − GCD(20,6) = 12 − 2 = 10 < D<sub>2</sub>(26) -> **f = 6 passes**.
 
-- Second set:  
-   * **T<sub>1</sub>(4,1)**:  
-     2 * 20 − GCD(4,20) = 40 − 4 = 36 > D<sub>1</sub>(4). Candidate **f = 20 fails**.  
-     2 * 10 − GCD(4,10) = 20 − 2 = 18 > D<sub>1</sub>(4). Candidate **f = 10 fails**.  
-     2 * 5  − GCD(4,5)  = 10 − 1 = 9  > D<sub>1</sub>(4). Candidate **f = 5  fails**.  
+  - **T<sub>3</sub>(22,3)**  
+    2 * 6 − GCD(22,6) = 12 − 2 = 10 < D<sub>3</sub>(22) -> **f = 6 passes**.
 
-> No candidate passes the first task check (*no feasible frame size exists*), checking **T<sub>2</sub>**, **T<sub>3</sub>** is unnecessary. **Cyclic scheduling is infeasible for this task set**, other methods should be considered (e.g., dynamic scheduling).
+> Candidate **f = 6** satisfies the third requirement for all tasks in the first set and does not violate any other constraints.
 
-- Third set:
-   * **T<sub>1</sub>(5,0.1)**:  
-     2 * 45 − GCD(5,45) = 90 − 5 = 85 > D<sub>1</sub>(5). Candidate **f = 45 fails**.  
-     2 * 42 − GCD(5,42) = 84 − 1 = 83 > D<sub>1</sub>(5). Candidate **f = 42 fails**.  
-     2 * 36 − GCD(5,36) = 72 − 1 = 71 > D<sub>1</sub>(5). Candidate **f = 36 fails**.  
-     2 * 35 − GCD(5,35) = 70 − 5 = 65 > D<sub>1</sub>(5). Candidate **f = 35 fails**.  
-     2 * 30 − GCD(5,30) = 60 − 5 = 55 > D<sub>1</sub>(5). Candidate **f = 30 fails**.  
-     2 * 28 − GCD(5,28) = 56 − 1 = 55 > D<sub>1</sub>(5). Candidate **f = 28 fails**.  
-     2 * 21 − GCD(5,21) = 42 − 1 = 41 > D<sub>1</sub>(5). Candidate **f = 21 fails**.  
-     2 * 20 − GCD(5,20) = 40 − 5 = 35 > D<sub>1</sub>(5). Candidate **f = 20 fails**.  
-     2 * 18 − GCD(5,18) = 36 − 1 = 35 > D<sub>1</sub>(5). Candidate **f = 18 fails**.  
-     2 * 15 − GCD(5,15) = 30 − 5 = 25 > D<sub>1</sub>(5). Candidate **f = 15 fails**.  
-     2 * 14 − GCD(5,14) = 28 − 1 = 27 > D<sub>1</sub>(5). Candidate **f = 14 fails**.  
-     2 * 12 − GCD(5,12) = 24 − 1 = 23 > D<sub>1</sub>(5). Candidate **f = 12 fails**.  
-     2 * 10 − GCD(5,10) = 20 − 5 = 15 > D<sub>1</sub>(5). Candidate **f = 10 fails**.  
-     2 * 9  − GCD(5,9)  = 18 − 1 = 17 > D<sub>1</sub>(5). Candidate **f = 9  fails**.  
+- **For the second task set**  
+  - **T<sub>1</sub>(4,1)**  
+    2 * 20 − GCD(4,20) = 40 − 4 = 36 > D<sub>1</sub>(4) -> **f = 20 fails**.  
+    2 * 10 − GCD(4,10) = 20 − 2 = 18 > D<sub>1</sub>(4) -> **f = 10 fails**.  
+    2 * 5  − GCD(4,5)  = 10 − 1 = 9  > D<sub>1</sub>(4) -> **f = 5 fails**.  
 
-> No candidate passes the first task check (*no feasible frame size exists*), checking **T<sub>2</sub>**, **T<sub>3</sub>** is unnecessary. **Cyclic scheduling is infeasible for this task set**, other methods should be considered (e.g., dynamic scheduling).
+> No candidate passed the check for the first task — **no feasible frame size exists**. Checking **T<sub>2</sub>**, **T<sub>3</sub>** is meaningless. **Cyclic scheduling for this task set is not feasible**. Alternative methods (e.g., dynamic scheduling) should be considered.
+
+- **For the third task set**  
+  - **T<sub>1</sub>(5,0.1)**  
+    2 * 45 − GCD(5,45) = 90 − 5 = 85 > D<sub>1</sub>(5) -> **f = 45 fails**.  
+    2 * 42 − GCD(5,42) = 84 − 1 = 83 > D<sub>1</sub>(5) -> **f = 42 fails**.  
+    2 * 36 − GCD(5,36) = 72 − 1 = 71 > D<sub>1</sub>(5) -> **f = 36 fails**.  
+    2 * 35 − GCD(5,35) = 70 − 5 = 65 > D<sub>1</sub>(5) -> **f = 35 fails**.  
+    2 * 30 − GCD(5,30) = 60 − 5 = 55 > D<sub>1</sub>(5) -> **f = 30 fails**.  
+    2 * 28 − GCD(5,28) = 56 − 1 = 55 > D<sub>1</sub>(5) -> **f = 28 fails**.  
+    2 * 21 − GCD(5,21) = 42 − 1 = 41 > D<sub>1</sub>(5) -> **f = 21 fails**.  
+    2 * 20 − GCD(5,20) = 40 − 5 = 35 > D<sub>1</sub>(5) -> **f = 20 fails**.  
+    2 * 18 − GCD(5,18) = 36 − 1 = 35 > D<sub>1</sub>(5) -> **f = 18 fails**.  
+    2 * 15 − GCD(5,15) = 30 − 5 = 25 > D<sub>1</sub>(5) -> **f = 15 fails**.  
+    2 * 14 − GCD(5,14) = 28 − 1 = 27 > D<sub>1</sub>(5) -> **f = 14 fails**.  
+    2 * 12 − GCD(5,12) = 24 − 1 = 23 > D<sub>1</sub>(5) -> **f = 12 fails**.  
+    2 * 10 − GCD(5,10) = 20 − 5 = 15 > D<sub>1</sub>(5) -> **f = 10 fails**.  
+    2 * 9  − GCD(5,9)  = 18 − 1 = 17 > D<sub>1</sub>(5) -> **f = 9 fails**.  
+
+> No candidate passed the check for the first task — **no feasible frame size exists**. Checking **T<sub>2</sub>**, **T<sub>3</sub>** is meaningless. **Cyclic scheduling for this task set is not feasible**. Alternative methods (e.g., dynamic scheduling) should be considered.
 
 ---
 
@@ -467,7 +471,7 @@ if __name__ == "__main__":
     main()
 ```
 
-Run, input, output:
+Sample run:
 
 ![Freehand Drawing.svg](assets/05.cyclicSchedulerEN1.png)
 

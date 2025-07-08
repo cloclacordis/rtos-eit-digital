@@ -5,9 +5,9 @@ def gcd(a, b):
 
 # User input
 try:
-    a = int(input("Enter first number: "))
-    b = int(input("Enter second number: "))
+    a = int(input("Enter the first number: "))
+    b = int(input("Enter the second number: "))
     result = gcd(a, b)
     print(f"GCD({a},{b}) = {result}")
 except ValueError:
-    print("Error: enter integers.")
+    print("Error: please enter valid integers.")
