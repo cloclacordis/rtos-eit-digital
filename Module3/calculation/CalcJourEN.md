@@ -189,7 +189,7 @@ To generate all divisors, go through all valid combinations of **a**, **b**, **c
 
 - a = 0, b = 0, c = 0, d = 0 -> 2<sup>0</sup> * 3<sup>0</sup> * 5<sup>0</sup> * 11<sup>0</sup> = 1,  
 - a = 1, b = 0, c = 1, d = 1 -> 2 * 1 * 5 * 11 = 110,  
-- a = 2, b = 1, c = 1, d = 1 -> 4* 3 * 5 * 11 = 660,  
+- a = 2, b = 1, c = 1, d = 1 -> 4 * 3 * 5 * 11 = 660,  
 - ...
 
 > And so on — until all 24 combinations are generated.
