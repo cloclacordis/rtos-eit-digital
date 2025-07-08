@@ -158,30 +158,35 @@ For each set, find the minimum frame size requirement **f**, i.e., the task with
 
 **Step 2.2**
 
-Per the second requirement, the frame size must evenly divide the hyperperiod **H**.
+According to the requirement, the frame size must divide the hyperperiod **H** exactly. To find all divisors of 660, we first factor the number into prime components:
 
-**Manual divisor search example for 660**  
-Factorize 660:
+- 660 / 2 = 330,  
+- 330 / 2 = 165, not divisible by 2 anymore -> record 2<sup>2</sup>,  
+- 165 / 3 = 55, not divisible by 3 anymore -> record 3,  
+- 55 / 5 = 11 -> record 5,  
+- 11 — a prime number -> record 11,  
+- **660 = 2<sup>2</sup> * 3 * 5 * 11**.
 
-660 / 2 = 330,  
-330 / 2 = 165, no longer divisible by 2, write 2<sup>2</sup>.  
-165 / 3 = 55, no longer divisible by 3, write 3.  
-55 / 5 = 11, write 5.  
-Remainder is 11 — a prime number, write 11.  
-Result: **660 = 2<sup>2</sup> * 3 * 5 * 11**.  
+To find all positive divisors, we must try all possible exponent combinations of the prime factors:
 
-Each divisor of 660 is a number that can be "assembled" by taking **powers** from the factorization:
+- from 0 to 2 for base 2: 2<sup>0</sup>, 2<sup>1</sup>, 2<sup>2</sup>,  
+- from 0 to 1 for bases 3, 5, and 11 (since they appear only once in the factorization).
 
-- 0 to 2 for 2,  
-- 0 to 1 for 3,  
-- 0 to 1 for 5,  
-- 0 to 1 for 11.
+The general formula for a divisor is:  
+**div. = 2<sup>a</sup> × 3<sup>b</sup> × 5<sup>c</sup> × 11<sup>d</sup>**,  
+where **a ∈ {0,1,2}, b, c, d ∈ {0,1}**.
 
-Possible combinations:
+The number of such combinations is:
+(2 + 1) × (1 + 1) × (1 + 1) × (1 + 1) = 3 × 2 × 2 × 2 = **24 divisors**.
 
-**d = 2<sup>a</sup> * 3<sup>b</sup> * 5<sup>c</sup> * 11<sup>d</sup>, a ∈ {0,1,2},  b, c, d ∈ {0,1}**.
+To generate all divisors, go through all valid combinations of **a**, **b**, **c**, and **d**:
 
-Number of (positive) divisors: 3 * 2 * 2 * 2 = **24**. To find **all divisors**, enumerate all combinations of the above powers and compute the value for each.
+- a = 0, b = 0, c = 0, d = 0 -> 2<sup>0</sup> * 3<sup>0</sup> * 5<sup>0</sup> * 11<sup>0</sup> = 1,  
+- a = 1, b = 0, c = 1, d = 1 -> 2 * 1 * 5 * 11 = 110,  
+- a = 2, b = 1, c = 1, d = 1 -> 4* 3 * 5 * 11 = 660,  
+- ...
+
+> And so on — until all 24 combinations are generated.
 
 **Automated divisor search example for a positive integer**
 
