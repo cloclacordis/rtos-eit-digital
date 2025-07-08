@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2025 Timofei Alekseenko
+
 import math
 
 def lcm(a, b):

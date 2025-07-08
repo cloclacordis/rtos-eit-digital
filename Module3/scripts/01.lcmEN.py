@@ -1,3 +1,5 @@
+# This script calculates the Least Common Multiple (LCM) of positive integers entered by the user
+
 import math
 from functools import reduce
 

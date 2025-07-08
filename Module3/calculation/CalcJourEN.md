@@ -1,6 +1,6 @@
 ## Task Overview
 
-Two tasks are given — one **computational**, for finding a feasible schedule for a cyclic scheduler, and the other — a **simulation** using a **real-time simulator** to verify feasibility. Below are the formulations and requirements for both tasks, conditions and necessary information for completion, along with a detailed solution log.
+There are two tasks: one **computational** — to compute a feasible cyclic schedule, and the other is a **simulation** — to verify its feasibility using a **real-time simulator**. Below are the detailed calculation journal.
 
 ---
 
@@ -42,33 +42,31 @@ For the cyclic scheduler, **three task sets** are provided:
 
 #### To Find
 
-For each of the three task sets, find:
+To find, for each of the three task sets, the **largest feasible frame size** that satisfies the following **three requirements**:
 
-**1**. *The largest frame size* that guarantees timely completion of all tasks (*largest feasible frame size*).
+**1**. **Task duration**. Each task **i** must start and complete within a single frame **f**. Therefore, the frame size must be no less than the maximum execution time:
+**f ≥ max<sub>1≤i≤n</sub>(e<sub>i</sub>)**,
+where **e<sub>i</sub>** is the execution time of task **i**.
 
-**2**. Such a size that satisfies the following *three requirements*:
+**2**. **Hyperperiod divisibility**. The frame size must divide the hyperperiod evenly: **H mod f = 0**, i.e., **f** divides **H** with no remainder.
 
-**a**. *Task duration*. Each task **i** must start and complete within a single frame **f**.  
-Hence, **f ≥ max<sub>1 ≤ i ≤ n</sub>(e<sub>i</sub>)**, where **e<sub>i</sub>** is the execution time of task **i**.
-No frame can be smaller than the longest task.
+> The **hyperperiod** is the shortest interval that contains all task periods. Mathematically, it is the **least common multiple (LCM)** of all task periods in the given set.
+> In practice, the hyperperiod can be used to verify feasibility: if the schedule meets all deadlines within one hyperperiod, it will always meet them.
+> To determine the number of frames **F** in a hyperperiod **H**, a simple division is used: **F = H / f** (not to be confused with the divisibility check **H mod f = 0**).
 
-**b**. *Hyperperiod divisibility*. The frame size must evenly divide the hyperperiod **H mod f = 0** (or **H % f == 0**).
-
-> The **hyperperiod** is the minimum interval that encompasses all task periods. Mathematically, the hyperperiod is the **least common multiple (LCM)** of all periods. Practically, the hyperperiod is used to verify feasibility: if the schedule meets deadlines within one hyperperiod, it will always meet them.  
-> To determine the *number of frames* **F** in the hyperperiod **H**, simple division is used: **F = H / f** (not to be confused with *divisibility check* **H mod f = 0**).
-
-**c**. *Interval between release and deadline*. There must be at least one frame that fits between the task's *release time* and its *deadline*.  
-In other words: **2f − GCD(P<sub>i</sub>, f) ≤ D<sub>i</sub>**, where **f** is the frame size; **P<sub>i</sub>** is the period of task **i**; **D<sub>i</sub>** is the deadline of task **i**; **GCD(P<sub>i</sub>, f)** is the *greatest common divisor (GCD)* of the period and frame values.
+**3**. **Interval between release time and deadline**. There must be at least one frame that fits within the interval between a task’s release time and its deadline.
+In other words, **2f − GCD(P<sub>i</sub>, f) ≤ D<sub>i</sub>**,
+where **f** is the frame size; **P<sub>i</sub>** is the period of task **i**; **D<sub>i</sub>** is the deadline of task **i**; and **GCD(P<sub>i</sub>, f)** is the **greatest common divisor (GCD)** of the task’s period and the frame size.
 
 ---
 
 #### Conditions
 
-The solution is performed using a sheet of paper and a pen. **Draft solution**:
+The solution is carried out using a sheet of paper and a pen. **Draft solution**:
 
 ![Freehand Drawing.svg](assets/01.mydraft.jpg)
 
-> The logic of the solution will be described in detail below and an example of automation will be offered.
+> The solution logic is explained in detail below, followed by an example of how the calculations can be automated.
 
 ---
 
@@ -76,26 +74,34 @@ The solution is performed using a sheet of paper and a pen. **Draft solution**:
 
 **Search Logic**
 
-1. Find the hyperperiod **H = LCM(P<sub>1</sub>,P<sub>2</sub>,...,P<sub>n</sub>)**.  
-2. Select candidate frames **f** (divisors of **H**) that:  
-- **≥ max<sub>1 ≤ i ≤ n</sub>(e<sub>i</sub>)** — requirement 1,  
-- **H mod f = 0** — requirement 2.  
-3. Check selected **f** against the condition **2f − GCD(P<sub>i</sub>, f) ≤ D<sub>i</sub>** for all tasks — requirement 3.  
-4. From the passing **f**, select the maximum value for each set.
+1. Find the hyperperiod **H = LCM(P<sub>1</sub>,P<sub>2</sub>,...,P<sub>n</sub>)**.
+2. Select candidate frame sizes **f** that satisfy both of the following:
+- **f** is a divisor of **H**,
+- **f ≥ max<sub>1≤i≤n</sub>(e<sub>i</sub>)**.
+3. Check whether each candidate **f** satisfies the condition **2f − GCD(P<sub>i</sub>, f) ≤ D<sub>i</sub>** for every task.
+4. From the values of **f** that pass the test, choose the **largest** one for each task set.
 
 ---
 
 **Step 1**
 
-First, find the **LCM** of periods **P** for each set.
+First, find the **LCM** of task periods **P** for each set.
 
 - First set: LCM(15,20,22) = **660**.  
 - Second set: LCM(4,5,20) = **20**.  
 - Third set: LCM(5,7,12,45) = **1260**.
 
-> To find the LCM of several numbers manually: factor each number into its prime factors, take the highest power of each unique prime, multiply them together — that’s the LCM. For example, LCM(12,18): 12 = 2<sup>2</sup> * 3, 18 = 2 * 3<sup>2</sup> -> LCM = 2<sup>2</sup> * 3<sup>2</sup> = 36.
+> To compute the LCM of several positive integers by hand:  
+> factor each number into its prime components,  
+> take the highest power of each unique prime factor among all the numbers,  
+> multiply them — the result is the LCM.
+>
+> For example, LCM(12,18):
+> 12 = 2<sup>2</sup> * 3,  
+> 18 = 2 * 3<sup>2</sup>,  
+> LCM = 2<sup>2</sup> * 3<sup>2</sup> = 36.
 
-**Example of LCM search automation for positive integers**
+**Example of automated LCM computation for positive integers**
 
 ```python
 import math
