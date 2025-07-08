@@ -4,11 +4,11 @@
 import math
 
 def lcm(a, b):
-    """Вычисляем НОК (LCM) двух чисел a и b."""
+    """Вычисляем наименьшее общее кратное (НОК) двух чисел"""
     return a * b // math.gcd(a, b)
 
 def compute_hyperperiod(periods):
-    """Вычисляем гиперпериод (LCM) списка периодов."""
+    """Вычисляем гиперпериод списка периодов."""
     H = periods[0]
     for p in periods[1:]:
         H = lcm(H, p)
@@ -27,7 +27,7 @@ def get_divisors(n):
 def find_max_frame(tasks):
     """
     Ищем наибольший размер кадра для набора задач.
-    Task - список словарей {'P': период, 'e': время выполнения, 'D': дедлайн}.
+    Задача = список словарей {'P': период, 'e': время выполнения, 'D': дедлайн}.
     """
     periods = [t['P'] for t in tasks]
     exec_times = [t['e'] for t in tasks]
@@ -36,19 +36,19 @@ def find_max_frame(tasks):
     # Заголовок расчетов
     print("\n=== Поиск наибольшего размера кадра ===\n")
 
-    # Шаг 1: гиперпериод и минимальный f
+    # Шаг 1: вычисление гиперпериода и минимально допустимого размера кадра
     H = compute_hyperperiod(periods)
     e_max = max(exec_times)
     print(f"Гиперпериод H = {H}")
     print(f"Минимально допустимый размер кадра f ≥ max(e_i) = {e_max}\n")
 
-    # Шаг 2: кандидаты
+    # Шаг 2: вычисление делителей гиперпериода, проверка f ≥ max(e_i), вывод в порядке убывания
     divisors = get_divisors(H)
     candidates = [f for f in divisors if f >= e_max]
     candidates.sort(reverse=True)
-    print("Кандидаты (делители гиперпериода) после f ≥ max(e_i) в порядке убывания:", candidates, "\n")
+    print("Делители гиперпериода, удовлетворяющие f ≥ max(e_i), в порядке убывания:", candidates, "\n")
 
-    # Шаг 3: проверка третьего требования
+    # Шаг 3: проверка критерия своевременного выполнения (2f – gcd ≤ D)
     for f in candidates:
         print(f"### Проверка f = {f} ###")
         all_pass = True
@@ -114,3 +114,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
