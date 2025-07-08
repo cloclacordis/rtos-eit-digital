@@ -35,7 +35,7 @@ For the cyclic scheduler, **three task sets** are provided:
 | T<sub>3</sub>    | 12    | 6     | 12    |
 | T<sub>4</sub>    | 45    | 9     | 45    |
 
-> Task structure: **T<sub>n</sub>(P,e,D)**,  
+> Task structure: **T<sub>i</sub>(P,e,D)**,  
 where **P** — *period*, or time between two consecutive task activations;  
 **e** — *execution time*, or duration required for normal task completion;  
 **D** — *deadline*, or maximum time by which the task must be completed.  
