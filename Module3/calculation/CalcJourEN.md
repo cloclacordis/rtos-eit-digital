@@ -2,7 +2,7 @@
 
 ## Task Overview
 
-There are two tasks: one **computational** — to compute a feasible cyclic schedule, and the other is a **simulation** — to verify its feasibility using a **real-time simulator**. Below are the detailed calculation journal.
+There are two tasks: one **computational** — to compute a feasible cyclic schedule, and the other is a **simulation** — to verify its feasibility using a **real-time simulator**. Below is a detailed *calculation journal* for **the first task**.
 
 ---
 
@@ -481,7 +481,4 @@ Sample run:
 
 ![Freehand Drawing.svg](assets/05.cyclicSchedulerEN3.png)
 
---- 
-
-### Second Task — Simulation
-
+---
