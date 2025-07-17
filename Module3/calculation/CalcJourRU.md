@@ -1,3 +1,5 @@
+> > **The English-language version** is available [here](https://github.com/cloclacordis/rtos-eit-digital/blob/2cfedb804f26b7a105a76b30faa16d90653c286c/Module3/calculation/CalcJourEN.md). **The code** presented in this document can be found as `.py` files in [a separate folder](https://github.com/cloclacordis/rtos-eit-digital/tree/2cfedb804f26b7a105a76b30faa16d90653c286c/Module3/scripts).
+
 ## Обзор задач
 
 Даны две задачи — одна **вычислительная**, на поиск выполнимого расписания для циклического планировщика, вторая — **на моделирование** с использованием **симулятора реального времени** для проверки выполнимости. Ниже приводится подробный журнал вычислений (*calculation journal*).
